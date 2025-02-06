@@ -33,15 +33,19 @@ def evaluate_expression(expression: str) -> int:
     
     def push_operator(op: str):
         """Push an operator onto the operator stack."""
+        operators.append(op)
     
     def push_operand(val: int):
         """Push an operand onto the operand stack."""
+        operands.append(val)
     
     def pop_operator() -> str:
         """Pop and return the top operator from the operator stack."""
+        return operators.pop()
     
     def pop_operand() -> int:
         """Pop and return the top operand from the operand stack."""
+        return operands.pop()
     
     def apply_operator(op: str, val1: int, val2: int) -> int:
         """
@@ -52,6 +56,34 @@ def evaluate_expression(expression: str) -> int:
         :param val2: int - The second operand.
         :return: int - The result of applying the operator.
         """
+        if op == '+':
+            return val1 + val2
+        elif op == '-':
+            return val1 - val2
+        elif op == '*':
+            return val1 * val2
+        elif op == '/':
+            return val1 / val2
+
+    i = 0
+    while i < len(expression):
+        char = expression[i]
+        if char.isdigit():
+            num = 0
+            while i < len(expression) and expression[i].isdigit():
+                num = num * 10 + int(expression[i])
+                i += 1
+            push_operand(num)
+            continue
+        elif char in '+-*/':
+            push_operator(char)
+        elif char == ')':
+            op = pop_operator()
+            val2 = pop_operand()
+            val1 = pop_operand()
+            result = apply_operator(op, val1, val2)
+            push_operand(result)
+        i += 1
     
     """
     Evaluate the expression one character at a time, the operand stack
